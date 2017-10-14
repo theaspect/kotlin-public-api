@@ -52,6 +52,23 @@ class Webhook : AIWebhookServlet() {
             val premium = random.nextInt(1000)
 
             output.speech = "In $segment you have $clients clients with $$premium premium"
+        } else if (input.result.action.equals("productHighlights")) {
+            val product = input.result.parameters["product"]
+            val productGroup = input.result.parameters["productGroup"]
+
+            val clients = random.nextInt(100)
+            val premium = random.nextInt(1000)
+
+            if (product != null && productGroup != null) {
+                output.speech = "In $productGroup in $product you have $clients clients with $$premium premium"
+            } else if (product != null) {
+                output.speech = "In $product you have $clients clients with $$premium premium"
+            } else if (productGroup != null) {
+                output.speech = "In $productGroup you have $clients clients with $$premium premium"
+            } else {
+                output.speech = "Please specify product and/or product group"
+            }
+
         } else {
             System.out.println(Gson().toJson(input))
             output.speech = "I can't understand \"${input.result.resolvedQuery}\""
