@@ -12,7 +12,8 @@ import javax.servlet.annotation.WebServlet
 @WebServlet("/webhook")
 class Webhook : AIWebhookServlet() {
     override fun doWebhook(input: AIWebhookRequest, output: Fulfillment) {
-        output.speech = "You said: " + input.result.fulfillment.speech
+        output.displayText = "You said: " + input.result.fulfillment.speech
+        output.speech = output.displayText
     }
 
 }
