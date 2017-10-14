@@ -2,6 +2,7 @@ package com.example
 
 import ai.api.model.Fulfillment
 import ai.api.web.AIWebhookServlet
+import com.google.gson.Gson
 import javax.servlet.annotation.WebServlet
 
 /**
@@ -12,8 +13,6 @@ import javax.servlet.annotation.WebServlet
 @WebServlet("/webhook")
 class Webhook : AIWebhookServlet() {
     override fun doWebhook(input: AIWebhookRequest, output: Fulfillment) {
-        output.displayText = "You said: " + input.result.fulfillment.displayText
-        output.speech = "You said: " + input.result.fulfillment.speech
+        output.displayText = "You typed:\n" + Gson().toJson(input)
     }
-
 }
