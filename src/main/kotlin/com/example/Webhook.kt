@@ -46,32 +46,37 @@ class Webhook : AIWebhookServlet() {
 
     override fun doWebhook(input: AIWebhookRequest, output: Fulfillment) {
         System.out.println(Gson().toJson(input))
-        if (input.result.action.equals("insuranceSegmentHighlights")) {
-            val segment = input.result.parameters["insuranceSegment"]
+        val action = input.result.action
+        output.speech = when(action) {
+            "insuranceSegmentHighlights" -> {
+                val segment = input.result.parameters["insuranceSegment"]
 
-            val clients = random.nextInt(100)
-            val premium = random.nextInt(1000)
+                val clients = random.nextInt(100)
+                val premium = random.nextInt(1000)
 
-            output.speech = "In $segment you have $clients clients with $$premium premium"
-        } else if (input.result.action.equals("productHighlights")) {
-            val product = input.result.parameters["product"] ?: ""
-            val productGroup = input.result.parameters["productGroup"] ?: ""
-
-            val clients = random.nextInt(100)
-            val premium = random.nextInt(1000)
-
-            if (product != "" && productGroup != "") {
-                output.speech = "In $productGroup in $product you have $clients clients with $$premium premium"
-            } else if (product != "") {
-                output.speech = "In $product you have $clients clients with $$premium premium"
-            } else if (productGroup != "") {
-                output.speech = "In $productGroup you have $clients clients with $$premium premium"
-            } else {
-                output.speech = "Please specify product and/or product group"
+                "In $segment you have $clients clients with $$premium premium"
             }
+            "renewals" -> "You have Property Risk for Acme Incorporated in two days and Aviation Liability for Aeroflot in 7 days"
+            "productHighlights" -> {
+                val product = input.result.parameters["product"] ?: ""
+                val productGroup = input.result.parameters["productGroup"] ?: ""
 
-        } else {
-            output.speech = "I can't understand \"${input.result.resolvedQuery}\""
+                val clients = random.nextInt(100)
+                val premium = random.nextInt(1000)
+
+                if (product != "" && productGroup != "") {
+                    "In $productGroup in $product you have $clients clients with $$premium premium"
+                } else if (product != "") {
+                    "In $product you have $clients clients with $$premium premium"
+                } else if (productGroup != "") {
+                    "In $productGroup you have $clients clients with $$premium premium"
+                } else {
+                    "Please specify product and/or product group"
+                }
+            }
+            else -> {
+                "I can't understand \"${input.result.resolvedQuery}\""
+            }
         }
     }
 }
