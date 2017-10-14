@@ -16,6 +16,8 @@ apply plugin: 'kotlin'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'application'
 
+// Run with ./gradlew bootRun
+
 jar {
     baseName = 'kotlin-getting-started'
     version = '1.0'
@@ -40,4 +42,6 @@ dependencies {
     compile 'org.webjars:jquery:2.2.4'
     compile 'org.webjars:jquery-ui:1.11.4'
     compile 'org.webjars:bootstrap:3.3.6'
+
+    compile 'ai.api.libai.web:libai-web-servlet:1.6.12'
 }
