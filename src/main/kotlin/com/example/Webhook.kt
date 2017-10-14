@@ -45,6 +45,7 @@ class Webhook : AIWebhookServlet() {
     private val random = Random()
 
     override fun doWebhook(input: AIWebhookRequest, output: Fulfillment) {
+        System.out.println(Gson().toJson(input))
         if (input.result.action.equals("insuranceSegmentHighlights")) {
             val segment = input.result.parameters["insuranceSegment"]
 
@@ -70,7 +71,6 @@ class Webhook : AIWebhookServlet() {
             }
 
         } else {
-            System.out.println(Gson().toJson(input))
             output.speech = "I can't understand \"${input.result.resolvedQuery}\""
         }
     }
