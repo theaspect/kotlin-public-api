@@ -56,7 +56,7 @@ class Webhook : AIWebhookServlet() {
 
                 "In $segment you have $clients clients with $$premium premium"
             }
-            "renewals" -> "You have Property Risk for Acme Incorporated in two days and Aviation Liability for Aeroflot in 7 days"
+            "renewals" -> "You have Property Risk for Acme Incorporated in two days and Aviation Liability for Aero International in 7 days"
             "productHighlights" -> {
                 val product = input.result.parameters["product"] ?: ""
                 val productGroup = input.result.parameters["productGroup"] ?: ""
@@ -67,12 +67,25 @@ class Webhook : AIWebhookServlet() {
                 if (product != "" && productGroup != "") {
                     "In $productGroup in $product you have $clients clients with $$premium premium"
                 } else if (product != "") {
-                    "In $product you have $clients clients with $$premium premium"
+                    "In $product you have $clients clients with $$premium million premium"
                 } else if (productGroup != "") {
-                    "In $productGroup you have $clients clients with $$premium premium"
+                    "In $productGroup you have $clients clients with $$premium million premium"
                 } else {
                     "Please specify product and/or product group"
                 }
+            }
+            "carrierForProduct" -> {
+                val product = input.result.parameters["product"] ?: ""
+                "For $product the best carriers are Global Insurance and Liability Incorporated"
+            }
+            "contactCEM" -> "You client engagement manager is Aaron A Aaronson I'll let him know"
+            "carrierByClient" -> {
+                val company = input.result.parameters["any"] ?: ""
+                "Company $company written by American Liability"
+            }
+            "topClients" -> {
+                val count = input.result.parameters["count"] ?: ""
+                "You will receive top $count clients list on you email"
             }
             else -> {
                 "I can't understand \"${input.result.resolvedQuery}\""
