@@ -54,7 +54,7 @@ class Webhook : AIWebhookServlet() {
                 val clients = random.nextInt(100)
                 val premium = random.nextInt(1000)
 
-                "In $segment you have $clients clients with $$premium premium"
+                "In $segment you have $clients clients with $$premium million premium"
             }
             "renewals" -> "You have Property Risk for Acme Incorporated in two days and Aviation Liability for Aero International in 7 days"
             "productHighlights" -> {
