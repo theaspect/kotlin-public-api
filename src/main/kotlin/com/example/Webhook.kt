@@ -55,10 +55,24 @@ class Webhook : AIWebhookServlet() {
         fun param(param: String) = input.result.getStringParameter(param)
 
         output.speech = when(action) {
+            "averageCommissionWithCarrier" -> {
+                val carrier = param("carrier")
+                val product = param("product")
+
+                when {
+                    exists(product) -> "You average commission with $carrier on $product is ${randomInt(5, 10)}%"
+                    else -> "You average commission with $carrier is ${randomInt(5, 10)}%"
+                }
+            }
             "carrierProfile" -> {
                 val carrier = param("carrier")
 
                 "I'll send you profile for $carrier on email"
+            }
+            "clientByNumber" -> {
+                val clientNumber = param("clientNumber")
+
+                "Client $clientNumber is ${companies.sample()} and have ${randomInt(10)} products"
             }
             "insuranceSegmentHighlights" -> {
                 val segment = param("insuranceSegment")
@@ -116,15 +130,7 @@ class Webhook : AIWebhookServlet() {
 
                 "$product for $industry could be written by ${carriers.sample()} or ${carriers.sample()}"
             }
-            "averageCommissionWithCarrier" -> {
-                val carrier = param("carrier")
-                val product = param("product")
 
-                when {
-                    exists(product) -> "You average commission with $carrier on $product is ${randomInt(5, 10)}%"
-                    else -> "You average commission with $carrier is ${randomInt(5, 10)}%"
-                }
-            }
             "highestCommissionForCarrier" -> {
                 val product = param("product")
                 val industry = param("industry")
