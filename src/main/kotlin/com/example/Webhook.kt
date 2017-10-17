@@ -101,8 +101,8 @@ class Webhook : AIWebhookServlet() {
                 }
             }
             "topProducers" -> {
-                val interval: String = input.result.parameters["interval"]?.toString() ?: ""
-                if (interval.isEmpty()) {
+                val interval: String? = input.result.parameters["interval"]?.toString()
+                if (interval != null) {
                     "Your top producers are John Dow and Jane Row"
                 } else {
                     "Your top producers $interval are John Dow and Jane Row"
