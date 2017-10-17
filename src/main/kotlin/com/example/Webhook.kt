@@ -44,9 +44,6 @@ import javax.servlet.annotation.WebServlet
  *  // TODO extract methods
  *  // TODO put context
  *  // TODO put fallback
- *  // TODO generate random clients
- *  // TODO generate random carriers
- *  // TODO generate random products
  */
 @WebServlet("/webhook")
 class Webhook : AIWebhookServlet() {
@@ -55,95 +52,89 @@ class Webhook : AIWebhookServlet() {
     override fun doWebhook(input: AIWebhookRequest, output: Fulfillment) {
         System.out.println(Gson().toJson(input))
         val action = input.result.action
+        fun param(param: String) = input.result.getStringParameter(param)
+
         output.speech = when(action) {
             "insuranceSegmentHighlights" -> {
-                val segment = input.result.getStringParameter("insuranceSegment")
+                val segment = param("insuranceSegment")
 
-                val clients = random.nextInt(100)
-                val premium = random.nextInt(1000)
+                val clients = randomInt(100)
+                val premium = randomInt(1000)
 
                 "In $segment you have $clients clients with $$premium million premium"
             }
-            "renewals" -> "You have Property Risk for Acme Incorporated in two days and Aviation Liability for Aero International in 7 days. " +
-                    "Make sure you bring up cross selling for Event Weather and Aviation Property and ask for ${random.nextInt(5) + 10}% commission with every renewal."
+            "renewals" -> "You have ${products.sample()} for ${companies.sample()} in ${randomInt(7)} days and " +
+                    "${products.sample()} for ${companies.sample()} in ${randomInt(7)} days. " +
+                    "Make sure you bring up cross selling for ${products.sample()} and ${products.sample()} and also " +
+                    "ask for ${random.nextInt(5) + 10}% commission with every renewal."
             "productHighlights" -> {
-                val product = input.result.getStringParameter("product")
-                val industry = input.result.getStringParameter("industry")
+                val product = param("product")
+                val industry = param("industry")
 
-                val clients = random.nextInt(100)
-                val premium = random.nextInt(1000)
+                val clients = randomInt(100)
+                val premium = randomInt(1000)
 
-                if (product != "" && industry != "") {
-                    "In $industry in $product you have $clients clients with $$premium premium"
-                } else if (product != "") {
-                    "In $product you have $clients clients with $$premium million premium"
-                } else if (industry != "") {
-                    "In $industry you have $clients clients with $$premium million premium"
-                } else {
-                    "Please specify product and/or product group"
+                when {
+                    exists(product, industry) -> "In $industry in $product you have $clients clients with $$premium premium"
+                    exists(product) -> "In $product you have $clients clients with $$premium million premium"
+                    exists(industry) -> "In $industry you have $clients clients with $$premium million premium"
+                    else -> "Please specify product and/or product group"
                 }
             }
             "carrierForProduct" -> {
-                val product = input.result.getStringParameter("product")
-                "For $product the best carriers are Global Insurance and Liability Incorporated"
+                val product = param("product")
+                "For $product the best carriers are ${carriers.sample()} and ${carriers.sample()}"
             }
-            "contactCEM" -> "You client engagement manager is Aaron A Aaronson. I'll let him know"
+            "contactCEM" -> "You client engagement manager is ${names.sample()}. I'll let him know"
             "carrierByClient" -> {
-                val company = input.result.getStringParameter("any")
-                "Company $company written by American Liability"
+                val company = param("any")
+                "Company $company written by ${carriers.sample()}"
             }
             "topClients" -> {
-                val count = input.result.getStringParameter("count")
-                if (count != "") {
-                    "You will receive top $count clients list on you email"
-                } else {
-                    "Your top clients are Acme Inc with ${random.nextInt(10)} products and Vect LLC with ${random.nextInt(10)} products"
+                val count = param("count")
+                when {
+                    exists(count) -> "You will receive top $count clients list on you email"
+                    else -> "Your top clients are ${companies.sample()} with ${random.nextInt(10)} products and " +
+                            "${companies.sample()} with ${random.nextInt(10)} products"
                 }
             }
             "topProducers" -> {
-                val interval: String? = input.result.getStringParameter("interval")
-                println(interval)
-                if (all(interval)) {
-                    "Your top producers $interval are John Dow and Jane Row"
-                } else {
-                    "Your top producers are John Dow and Jane Row"
+                val interval = param("interval")
+                when {
+                    exists(interval) -> "Your top producers $interval are ${names.sample()} and ${names.sample()}"
+                    else -> "Your top producers are ${names.sample()} and ${names.sample()}"
                 }
             }
             "whoCanWriteIndustry" -> {
-                val product = input.result.getStringParameter("product")
-                val industry = input.result.getStringParameter("industry")
+                val product = param("product")
+                val industry = param("industry")
 
-                "$product for $industry could be written by Global Insurance or Liability Incorporated"
+                "$product for $industry could be written by ${carriers.sample()} or ${carriers.sample()}"
             }
             "averageCommissionWithCarrier" -> {
-                val carrier = input.result.getStringParameter("carrier")
-                val product = input.result.getStringParameter("product")
+                val carrier = param("carrier")
+                val product = param("product")
 
-                if (product.isEmpty()) {
-                    "You average commission with $carrier is ${random.nextInt(5) + 10}%"
-                } else {
-                    "You average commission with $carrier on $product is ${random.nextInt(5) + 10}%"
+                when {
+                    exists(product) -> "You average commission with $carrier on $product is ${randomInt(5, 10)}%"
+                    else -> "You average commission with $carrier is ${randomInt(5, 10)}%"
                 }
             }
-
             "highestCommissionForCarrier" -> {
-                val product = input.result.getStringParameter("product")
-                val industry = input.result.getStringParameter("industry")
+                val product = param("product")
+                val industry = param("industry")
 
-                if(product != "" && industry != ""){
-                    "For $product in $industry highest commission payed by " +
-                            "Global Insurance ${random.nextInt(5) + 10}% " +
-                            "and Liability Incorporated ${random.nextInt(5) + 10}%"
-                }else if (product != ""){
-                    "For $product highest commission payed by " +
-                            "Global Insurance ${random.nextInt(5) + 10}% " +
-                            "and Liability Incorporated ${random.nextInt(5) + 10}%"
-                }else if (industry != ""){
-                    "In $industry highest commission payed by " +
-                            "Global Insurance ${random.nextInt(5) + 10}% " +
-                            "and Liability Incorporated ${random.nextInt(5) + 10}%"
-                }else{
-                    "Try ask again but with product and or industry"
+                when {
+                    exists(product, industry) -> "For $product in $industry highest commission payed by " +
+                            "${carriers.sample()} ${randomInt(5, 10)}% " +
+                            "and ${carriers.sample()} ${randomInt(5, 10)}%"
+                    exists(product) -> "For $product highest commission payed by " +
+                            "${carriers.sample()} ${randomInt(5, 10)}% " +
+                            "and ${carriers.sample()} ${randomInt(5, 10)}%"
+                    exists(industry) -> "In $industry highest commission payed by " +
+                            "${carriers.sample()} ${randomInt(5, 10)}% " +
+                            "and ${carriers.sample()} ${randomInt(5, 10)}%"
+                    else -> "Try ask again but with product and or industry"
                 }
             }
             else -> {
@@ -152,7 +143,38 @@ class Webhook : AIWebhookServlet() {
         }
     }
 
-    private fun all(vararg params: String?): Boolean {
+    private fun exists(vararg params: String?): Boolean {
         return !params.any { it.isNullOrEmpty() }
     }
+
+    private fun randomInt(to: Int): Int = randomInt(1, to)
+    private fun randomInt(from: Int, to: Int): Int = random.nextInt(to - from) + from
+
+    private fun <T> MutableList<T>.sample(): T = this[randomInt(this.size)]
+    private fun <T> MutableList<T>.sample(count: Int): List<T> {
+        Collections.shuffle(this)
+        return this.take(count)
+    }
+
+    private val products = mutableListOf(
+            "Group Medical", "Aviation Liability", "Aviation Property", "Construction Miscellaneous", "Liability General",
+            "Event Weather", "Crime", "Intellectual Property", "Marine Cargo", "Marine Liability",
+            "Property Risk", "Reinsurance")
+    // http://random-name-generator.info/random/
+    private val names = mutableListOf(
+            "Phillip Moore", "Virginia Allen", "Martha Johnson", "Steven Hill", "Christopher Price",
+            "Sean Thomas", "Robert Martinez", "Mark Gonzalez", "Ruby Hughes", "Judy Evans")
+    // http://www.mockaroo.com
+    private val companies = mutableListOf(
+            "Plain Spoon LLP", "Sunny Penguin LLP", "Glass LLP", "ICON plc", "Qwest Corporation",
+            "WEX Inc.", "Trinseo S.A.", "Lawson Products, Inc.", "Data I/O Corporation",
+            "Risus Inc.", "Landstar System, Inc.", "Dorian LPG", "Denbury Resources Inc.", "Morbi LLC",
+            "Clearfield, Inc.", "Hudson Global, Inc.", "Cras Limited", "Novavax, Inc.", "Delphi Automotive plc", "Cognex Corporation")
+    // https://en.wikipedia.org/wiki/List_of_United_States_insurance_companies
+    private val carriers = mutableListOf(
+            "Allstate", "Applied Underwriters", "Blue Advantage", "Chubb Corp", "Esurance",
+            "FM Global", "General Re", "Hanover Insurance", "Insurance Panda", "Knights of Columbus",
+            "Liberty Mutual", "Mercury Insurance Group", "National Life", "Omega", "Pacific Life",
+            "Primerica", "Pure Insurance", "Safeco", "Symetra", "XL Catlin"
+    )
 }
