@@ -55,6 +55,11 @@ class Webhook : AIWebhookServlet() {
         fun param(param: String) = input.result.getStringParameter(param)
 
         output.speech = when(action) {
+            "carrierProfile" -> {
+                val carrier = param("carrier")
+
+                "I'll send you profile for $carrier on email"
+            }
             "insuranceSegmentHighlights" -> {
                 val segment = param("insuranceSegment")
 
