@@ -81,65 +81,14 @@ class Webhook : AIWebhookServlet() {
                     else -> "You client engagement manager is ${names.sample()}. I'll let know that you need help"
                 }
             }
-
-
-            "insuranceSegmentHighlights" -> {
-                val segment = param("insuranceSegment")
-
-                val clients = randomInt(100)
-                val premium = randomInt(1000)
-
-                "In $segment you have $clients clients with $$premium million premium"
-            }
-            "renewals" -> "You have ${products.sample()} for ${companies.sample()} in ${randomInt(7)} days and " +
-                    "${products.sample()} for ${companies.sample()} in ${randomInt(7)} days. " +
-                    "Make sure you bring up cross selling for ${products.sample()} and ${products.sample()} and also " +
-                    "ask for ${random.nextInt(5) + 10}% commission with every renewal."
-            "productHighlights" -> {
-                val product = param("product")
-                val industry = param("industry")
-
-                val clients = randomInt(100)
-                val premium = randomInt(1000)
-
-                when {
-                    exists(product, industry) -> "In $industry in $product you have $clients clients with $$premium premium"
-                    exists(product) -> "In $product you have $clients clients with $$premium million premium"
-                    exists(industry) -> "In $industry you have $clients clients with $$premium million premium"
-                    else -> "Please specify product and/or product group"
-                }
-            }
             "carrierForProduct" -> {
                 val product = param("product")
                 "For $product the best carriers are ${carriers.sample()} and ${carriers.sample()}"
             }
-            "contactCEM" -> "You client engagement manager is ${names.sample()}. I'll let him know"
             "carrierByClient" -> {
                 val company = param("any")
                 "Company $company written by ${carriers.sample()}"
             }
-            "topClients" -> {
-                val count = param("count")
-                when {
-                    exists(count) -> "You will receive top $count clients list on you email"
-                    else -> "Your top clients are ${companies.sample()} with ${random.nextInt(10)} products and " +
-                            "${companies.sample()} with ${random.nextInt(10)} products"
-                }
-            }
-            "topProducers" -> {
-                val interval = param("interval")
-                when {
-                    exists(interval) -> "Your top producers $interval are ${names.sample()} and ${names.sample()}"
-                    else -> "Your top producers are ${names.sample()} and ${names.sample()}"
-                }
-            }
-            "whoCanWriteIndustry" -> {
-                val product = param("product")
-                val industry = param("industry")
-
-                "$product for $industry could be written by ${carriers.sample()} or ${carriers.sample()}"
-            }
-
             "highestCommissionForCarrier" -> {
                 val product = param("product")
                 val industry = param("industry")
@@ -156,6 +105,59 @@ class Webhook : AIWebhookServlet() {
                             "and ${carriers.sample()} ${randomInt(5, 10)}%"
                     else -> "Try ask again but with product and or industry"
                 }
+            }
+            "insuranceSegmentHighlights" -> {
+                val segment = param("insuranceSegment")
+
+                val clients = randomInt(100)
+                val premium = randomInt(1000)
+
+                "In $segment you have $clients clients with $$premium million premium"
+            }
+            "productHighlights" -> {
+                val product = param("product")
+                val industry = param("industry")
+
+                val clients = randomInt(100)
+                val premium = randomInt(1000)
+
+                when {
+                    exists(product, industry) -> "For $product in $industry you have $clients clients with $$premium million premium"
+                    exists(product) -> "For $product you have $clients clients with $$premium million premium"
+                    exists(industry) -> "In $industry you have $clients clients with $$premium million premium"
+                    else -> "Please specify product and/or industry"
+                }
+            }
+            "renewals" -> "You have ${products.sample()} for ${companies.sample()} in ${randomInt(7)} days and " +
+                    "${products.sample()} for ${companies.sample()} in ${randomInt(7)} days. " +
+                    "Make sure you bring up cross selling for ${products.sample()} and ${products.sample()} and also " +
+                    "ask for ${random.nextInt(5) + 10}% commission with every renewal."
+            "topClients" -> {
+                val count = param("count")
+                when {
+                    exists(count) -> "You will receive top $count clients list on you email"
+                    else -> "Your top clients are ${companies.sample()} with ${random.nextInt(10)} products and " +
+                            "${companies.sample()} with ${random.nextInt(10)} products"
+                }
+            }
+            "topProducers" -> {
+                val interval = param("interval")
+                when {
+                    exists(interval) -> "Your top producers $interval are ${names.sample()} and ${names.sample()}"
+                    else -> "Your top producers are ${names.sample()} and ${names.sample()}"
+                }
+            }
+            "whoCanWriteClient" -> {
+                val product = param("product")
+                val client = param("client")
+
+                "$product for $client could be written by ${carriers.sample()} or ${carriers.sample()}"
+            }
+            "whoCanWriteIndustry" -> {
+                val product = param("product")
+                val industry = param("industry")
+
+                "$product in $industry could be written by ${carriers.sample()} or ${carriers.sample()}"
             }
             else -> {
                 "I can't understand \"${input.result.resolvedQuery}\""
