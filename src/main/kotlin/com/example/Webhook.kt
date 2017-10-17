@@ -57,7 +57,7 @@ class Webhook : AIWebhookServlet() {
         val action = input.result.action
         output.speech = when(action) {
             "insuranceSegmentHighlights" -> {
-                val segment = input.result.parameters["insuranceSegment"]
+                val segment = input.result.parameters["insuranceSegment"]?.toString() ?: ""
 
                 val clients = random.nextInt(100)
                 val premium = random.nextInt(1000)
@@ -67,8 +67,8 @@ class Webhook : AIWebhookServlet() {
             "renewals" -> "You have Property Risk for Acme Incorporated in two days and Aviation Liability for Aero International in 7 days. " +
                     "Make sure you bring up cross selling for Event Weather and Aviation Property and ask for ${random.nextInt(5) + 10}% commission with every renewal."
             "productHighlights" -> {
-                val product = input.result.parameters["product"] ?: ""
-                val industry = input.result.parameters["industry"] ?: ""
+                val product = input.result.parameters["product"]?.toString() ?: ""
+                val industry = input.result.parameters["industry"]?.toString() ?: ""
 
                 val clients = random.nextInt(100)
                 val premium = random.nextInt(1000)
@@ -89,11 +89,11 @@ class Webhook : AIWebhookServlet() {
             }
             "contactCEM" -> "You client engagement manager is Aaron A Aaronson. I'll let him know"
             "carrierByClient" -> {
-                val company = input.result.parameters["any"] ?: ""
+                val company = input.result.parameters["any"]?.toString() ?: ""
                 "Company $company written by American Liability"
             }
             "topClients" -> {
-                val count = input.result.parameters["count"] ?: ""
+                val count = input.result.parameters["count"]?.toString() ?: ""
                 if (count != "") {
                     "You will receive top $count clients list on you email"
                 } else {
@@ -101,33 +101,33 @@ class Webhook : AIWebhookServlet() {
                 }
             }
             "topProducers" -> {
-                val interval = input.result.parameters["interval"] ?: ""
-                if(interval != ""){
-                    "Your top producers $interval are John Dow and Jane Row"
-                }else{
+                val interval: String = input.result.parameters["interval"]?.toString() ?: ""
+                if (interval.isEmpty()) {
                     "Your top producers are John Dow and Jane Row"
+                } else {
+                    "Your top producers $interval are John Dow and Jane Row"
                 }
             }
             "whoCanWriteIndustry" -> {
-                val product = input.result.parameters["product"] ?: ""
-                val industry = input.result.parameters["industry"] ?: ""
+                val product = input.result.parameters["product"]?.toString() ?: ""
+                val industry = input.result.parameters["industry"]?.toString() ?: ""
 
                 "$product for $industry could be written by Global Insurance or Liability Incorporated"
             }
             "averageCommissionWithCarrier" -> {
-                val carrier = input.result.parameters["carrier"] ?: ""
-                val product = input.result.parameters["product"] ?: ""
+                val carrier = input.result.parameters["carrier"]?.toString() ?: ""
+                val product = input.result.parameters["product"]?.toString() ?: ""
 
-                if(product != ""){
-                    "You average commission with $carrier on $product is ${random.nextInt(5) + 10}%"
-                }else{
+                if (product.isEmpty()) {
                     "You average commission with $carrier is ${random.nextInt(5) + 10}%"
+                } else {
+                    "You average commission with $carrier on $product is ${random.nextInt(5) + 10}%"
                 }
             }
 
             "highestCommissionForCarrier" -> {
-                val product = input.result.parameters["product"] ?: ""
-                val industry = input.result.parameters["industry"] ?: ""
+                val product = input.result.parameters["product"]?.toString() ?: ""
+                val industry = input.result.parameters["industry"]?.toString() ?: ""
 
                 if(product != "" && industry != ""){
                     "For $product in $industry highest commission payed by " +
