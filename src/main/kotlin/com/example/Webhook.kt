@@ -74,6 +74,15 @@ class Webhook : AIWebhookServlet() {
 
                 "Client $clientNumber is ${companies.sample()} and have ${randomInt(10)} products"
             }
+            "contactCEM" -> {
+                val any = param("any")
+                when {
+                    exists(any) -> "You client engagement manager is ${names.sample()}. I'll let know that you need help with $any"
+                    else -> "You client engagement manager is ${names.sample()}. I'll let know that you need help"
+                }
+            }
+
+
             "insuranceSegmentHighlights" -> {
                 val segment = param("insuranceSegment")
 
