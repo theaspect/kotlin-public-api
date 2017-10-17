@@ -40,6 +40,7 @@ import javax.servlet.annotation.WebServlet
  *  "status":{"code":200,"errorType":"success"},
  *  "sessionId":"da2313b2-4c9f-1647-6913-2af28fac01df"}
  *
+ *  // TODO put authentication
  *  // TODO extract methods
  *  // TODO put context
  *  // TODO put fallback
@@ -67,17 +68,17 @@ class Webhook : AIWebhookServlet() {
                     "Make sure you bring up cross selling for Event Weather and Aviation Property and ask for ${random.nextInt(5) + 10}% commission with every renewal."
             "productHighlights" -> {
                 val product = input.result.parameters["product"] ?: ""
-                val productGroup = input.result.parameters["productGroup"] ?: ""
+                val industry = input.result.parameters["industry"] ?: ""
 
                 val clients = random.nextInt(100)
                 val premium = random.nextInt(1000)
 
-                if (product != "" && productGroup != "") {
-                    "In $productGroup in $product you have $clients clients with $$premium premium"
+                if (product != "" && industry != "") {
+                    "In $industry in $product you have $clients clients with $$premium premium"
                 } else if (product != "") {
                     "In $product you have $clients clients with $$premium million premium"
-                } else if (productGroup != "") {
-                    "In $productGroup you have $clients clients with $$premium million premium"
+                } else if (industry != "") {
+                    "In $industry you have $clients clients with $$premium million premium"
                 } else {
                     "Please specify product and/or product group"
                 }
