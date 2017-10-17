@@ -103,10 +103,10 @@ class Webhook : AIWebhookServlet() {
             "topProducers" -> {
                 val interval: String? = input.result.parameters["interval"]?.toString()
                 println(interval)
-                if (interval == null) {
-                    "Your top producers are John Dow and Jane Row"
-                } else {
+                if (all(interval)) {
                     "Your top producers $interval are John Dow and Jane Row"
+                } else {
+                    "Your top producers are John Dow and Jane Row"
                 }
             }
             "whoCanWriteIndustry" -> {
@@ -150,5 +150,9 @@ class Webhook : AIWebhookServlet() {
                 "I can't understand \"${input.result.resolvedQuery}\""
             }
         }
+    }
+
+    fun all(vararg params: String?): Boolean {
+        return !params.any { it.isNullOrEmpty() }
     }
 }
