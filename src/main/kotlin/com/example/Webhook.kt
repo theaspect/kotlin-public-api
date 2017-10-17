@@ -39,6 +39,13 @@ import javax.servlet.annotation.WebServlet
  *  },
  *  "status":{"code":200,"errorType":"success"},
  *  "sessionId":"da2313b2-4c9f-1647-6913-2af28fac01df"}
+ *
+ *  // TODO extract methods
+ *  // TODO put context
+ *  // TODO put fallback
+ *  // TODO generate random clients
+ *  // TODO generate random carriers
+ *  // TODO generate random products
  */
 @WebServlet("/webhook")
 class Webhook : AIWebhookServlet() {
@@ -56,7 +63,8 @@ class Webhook : AIWebhookServlet() {
 
                 "In $segment you have $clients clients with $$premium million premium"
             }
-            "renewals" -> "You have Property Risk for Acme Incorporated in two days and Aviation Liability for Aero International in 7 days"
+            "renewals" -> "You have Property Risk for Acme Incorporated in two days and Aviation Liability for Aero International in 7 days. " +
+                    "Make sure you bring up cross selling for Event Weather and Aviation Property and ask for ${random.nextInt(5) + 10}% commission with every renewal."
             "productHighlights" -> {
                 val product = input.result.parameters["product"] ?: ""
                 val productGroup = input.result.parameters["productGroup"] ?: ""
@@ -78,14 +86,59 @@ class Webhook : AIWebhookServlet() {
                 val product = input.result.parameters["product"] ?: ""
                 "For $product the best carriers are Global Insurance and Liability Incorporated"
             }
-            "contactCEM" -> "You client engagement manager is Aaron A Aaronson I'll let him know"
+            "contactCEM" -> "You client engagement manager is Aaron A Aaronson. I'll let him know"
             "carrierByClient" -> {
                 val company = input.result.parameters["any"] ?: ""
                 "Company $company written by American Liability"
             }
             "topClients" -> {
                 val count = input.result.parameters["count"] ?: ""
-                "You will receive top $count clients list on you email"
+                if (count != "") {
+                    "You will receive top $count clients list on you email"
+                } else {
+                    "Your top clients are Acme Inc with ${random.nextInt(10)} products and Vect LLC with ${random.nextInt(10)} products"
+                }
+            }
+            "topProducers" -> {
+                val interval = input.result.parameters["interval"] ?: ""
+                "Your top producers $interval are John Dow and Jane Row"
+            }
+            "whoCanWriteIndustry" -> {
+                val product = input.result.parameters["product"] ?: ""
+                val industry = input.result.parameters["industry"] ?: ""
+
+                "$product for $industry could be written by Global Insurance or Liability Incorporated"
+            }
+            "averageCommissionWithCarrier" -> {
+                val carrier = input.result.parameters["carrier"] ?: ""
+                val product = input.result.parameters["product"] ?: ""
+
+                if(product != ""){
+                    "You average commission with $carrier on $product is ${random.nextInt(5) + 10}%"
+                }else{
+                    "You average commission with $carrier is ${random.nextInt(5) + 10}%"
+                }
+            }
+
+            "highestCommissionForCarrier" -> {
+                val product = input.result.parameters["product"] ?: ""
+                val industry = input.result.parameters["industry"] ?: ""
+
+                if(product != "" && industry != ""){
+                    "For $product in $industry highest commission payed by " +
+                            "Global Insurance ${random.nextInt(5) + 10}% " +
+                            "and Liability Incorporated ${random.nextInt(5) + 10}%"
+                }else if (product != ""){
+                    "For $product highest commission payed by " +
+                            "Global Insurance ${random.nextInt(5) + 10}% " +
+                            "and Liability Incorporated ${random.nextInt(5) + 10}%"
+                }else if (industry != ""){
+                    "In $industry highest commission payed by " +
+                            "Global Insurance ${random.nextInt(5) + 10}% " +
+                            "and Liability Incorporated ${random.nextInt(5) + 10}%"
+                }else{
+                    "Try ask again but with product and or industry"
+                }
             }
             else -> {
                 "I can't understand \"${input.result.resolvedQuery}\""
