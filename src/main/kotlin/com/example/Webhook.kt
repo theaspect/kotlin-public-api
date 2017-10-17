@@ -102,7 +102,11 @@ class Webhook : AIWebhookServlet() {
             }
             "topProducers" -> {
                 val interval = input.result.parameters["interval"] ?: ""
-                "Your top producers $interval are John Dow and Jane Row"
+                if(interval != ""){
+                    "Your top producers $interval are John Dow and Jane Row"
+                }else{
+                    "Your top producers are John Dow and Jane Row"
+                }
             }
             "whoCanWriteIndustry" -> {
                 val product = input.result.parameters["product"] ?: ""
