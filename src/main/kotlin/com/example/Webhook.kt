@@ -55,6 +55,25 @@ class Webhook : AIWebhookServlet() {
         fun param(param: String) = input.result.getStringParameter(param)
 
         output.speech = when(action) {
+            "averageCommission" -> {
+                val interval = param("interval")
+
+                when {
+                    exists(interval) -> "You average commission $interval is ${randomInt(5, 10)}%"
+                    else -> "You average commission year to date is ${randomInt(5, 10)}%"
+                }
+            }
+            "averageCommissionInTheMarket" -> {
+                val product = param("product")
+                val industry = param("industry")
+
+                when {
+                    exists(product, industry) -> "For $product in $industry average commission is ${randomInt(5, 10)}%"
+                    exists(product) -> "For $product average commission is ${randomInt(5, 10)}%"
+                    exists(industry) -> "In $industry average commission is ${randomInt(5, 10)}%"
+                    else -> "Try ask again but with product and or industry"
+                }
+            }
             "averageCommissionWithCarrier" -> {
                 val carrier = param("carrier")
                 val product = param("product")
@@ -62,6 +81,17 @@ class Webhook : AIWebhookServlet() {
                 when {
                     exists(product) -> "You average commission with $carrier on $product is ${randomInt(5, 10)}%"
                     else -> "You average commission with $carrier is ${randomInt(5, 10)}%"
+                }
+            }
+            "belowAverageCommission" -> {
+                val product = param("product")
+                val interval = param("interval")
+
+                when {
+                    exists(product, interval) -> "${randomInt(20, 50)}% of your accounts are below average commission $interval for $product"
+                    exists(product) -> "${randomInt(20, 50)}% of your accounts are below average commission year to date for $product"
+                    exists(interval) -> "${randomInt(20, 50)}% of your accounts are below average commission $interval"
+                    else -> "Please specify product and/or interval"
                 }
             }
             "carrierProfile" -> {
@@ -88,6 +118,12 @@ class Webhook : AIWebhookServlet() {
             "carrierByClient" -> {
                 val company = param("any")
                 "Company $company written by ${carriers.sample()}"
+            }
+            "crossSell" -> {
+                val segment1 = param("insuranceSegment1")
+                val segment2 = param("insuranceSegment2")
+
+                "Between $segment1 and $segment2 you have $${randomInt(10)} millions cross sell"
             }
             "highestCommissionForCarrier" -> {
                 val product = param("product")
@@ -128,10 +164,31 @@ class Webhook : AIWebhookServlet() {
                     else -> "Please specify product and/or industry"
                 }
             }
-            "renewals" -> "You have ${products.sample()} for ${companies.sample()} in ${randomInt(7)} days and " +
-                    "${products.sample()} for ${companies.sample()} in ${randomInt(7)} days. " +
-                    "Make sure you bring up cross selling for ${products.sample()} and ${products.sample()} and also " +
-                    "ask for ${random.nextInt(5) + 10}% commission with every renewal."
+            "renewals" -> {
+                val number = param("number")
+
+                when {
+                    exists(number) -> "In next $number days "
+                    else -> ""
+                } +
+                        "You have ${products.sample()} for ${companies.sample()} in ${randomInt(7)} days and " +
+                        "${products.sample()} for ${companies.sample()} in ${randomInt(7)} days. " +
+                        "Make sure you bring up cross selling for ${products.sample()} and ${products.sample()} and also " +
+                        "ask for ${random.nextInt(5) + 10}% commission with every renewal."
+            }
+            "revenue" -> {
+                val interval = param("interval")
+
+                when {
+                    exists(interval) -> "Your revenue $interval is $${randomInt(10)} millions"
+                    else -> "Your revenue Year to date is $${randomInt(10)} millions"
+                }
+            }
+            "topCarriers" -> {
+                "Your top carriers by Premium In Force are " +
+                        "${carriers.sample()} with $${randomInt(10)} millions " +
+                        "and ${carriers.sample()} with $${randomInt(10)} millions"
+            }
             "topClients" -> {
                 val count = param("count")
                 when {
@@ -140,11 +197,31 @@ class Webhook : AIWebhookServlet() {
                             "${companies.sample()} with ${random.nextInt(10)} products"
                 }
             }
-            "topProducers" -> {
+            "topRoles" -> {
                 val interval = param("interval")
-                when {
-                    exists(interval) -> "Your top producers $interval are ${names.sample()} and ${names.sample()}"
-                    else -> "Your top producers are ${names.sample()} and ${names.sample()}"
+                val role = param("role")
+                when (role) {
+                    "account owners by revenue" -> {
+                        when {
+                            exists(interval) -> "Your top account owners by revenue $interval are " +
+                                    "${names.sample()} with $${randomInt(10)} millions " +
+                                    "and ${names.sample()} with $${randomInt(10)} millions"
+                            else -> "Your top account owners by revenue year to date are " +
+                                    "${names.sample()} with $${randomInt(10)} millions " +
+                                    "and ${names.sample()} with $${randomInt(10)} millions"
+                        }
+                    }
+                    "revenue producers" -> {
+                        when {
+                            exists(interval) -> "Your top revenue producers $interval are " +
+                                    "${names.sample()} with $${randomInt(10)} millions " +
+                                    "and ${names.sample()} with $${randomInt(10)} millions"
+                            else -> "Your top revenue producers year to date are " +
+                                    "${names.sample()} with $${randomInt(10)} millions " +
+                                    "and ${names.sample()} with $${randomInt(10)} millions"
+                        }
+                    }
+                    else -> "I don't know about $role yet"
                 }
             }
             "whoCanWriteClient" -> {
