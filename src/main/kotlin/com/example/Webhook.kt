@@ -158,9 +158,9 @@ class Webhook : AIWebhookServlet() {
                 val premium = randomInt(1000)
 
                 when {
-                    exists(product, industry) -> "For $product in $industry you have $clients clients with $$premium million premium"
-                    exists(product) -> "For $product you have $clients clients with $$premium million premium"
-                    exists(industry) -> "In $industry you have $clients clients with $$premium million premium"
+                    exists(product, industry) -> "For $product in $industry you have $clients clients with $premium million premium"
+                    exists(product) -> "For $product you have $clients clients with $premium million premium"
+                    exists(industry) -> "In $industry you have $clients clients with $premium million premium"
                     else -> "Please specify product and/or industry"
                 }
             }
@@ -180,14 +180,14 @@ class Webhook : AIWebhookServlet() {
                 val interval = param("interval")
 
                 when {
-                    exists(interval) -> "Your revenue $interval is $${randomInt(10)} millions"
-                    else -> "Your revenue Year to date is $${randomInt(10)} millions"
+                    exists(interval) -> "Your revenue $interval is ${randomInt(10)} millions"
+                    else -> "Your revenue Year to date is ${randomInt(10)} millions"
                 }
             }
             "topCarriers" -> {
                 "Your top carriers by Premium In Force are " +
-                        "${carriers.sample()} with $${randomInt(10)} millions " +
-                        "and ${carriers.sample()} with $${randomInt(10)} millions"
+                        "${carriers.sample()} with ${randomInt(10)} millions " +
+                        "and ${carriers.sample()} with ${randomInt(10)} millions"
             }
             "topClients" -> {
                 val count = param("count")
@@ -204,21 +204,21 @@ class Webhook : AIWebhookServlet() {
                     "account owners by revenue" -> {
                         when {
                             exists(interval) -> "Your top account owners by revenue $interval are " +
-                                    "${names.sample()} with $${randomInt(10)} millions " +
-                                    "and ${names.sample()} with $${randomInt(10)} millions"
+                                    "${names.sample()} with ${randomInt(10)} millions " +
+                                    "and ${names.sample()} with ${randomInt(10)} millions"
                             else -> "Your top account owners by revenue year to date are " +
-                                    "${names.sample()} with $${randomInt(10)} millions " +
-                                    "and ${names.sample()} with $${randomInt(10)} millions"
+                                    "${names.sample()} with ${randomInt(10)} millions " +
+                                    "and ${names.sample()} with ${randomInt(10)} millions"
                         }
                     }
                     "revenue producers" -> {
                         when {
                             exists(interval) -> "Your top revenue producers $interval are " +
-                                    "${names.sample()} with $${randomInt(10)} millions " +
-                                    "and ${names.sample()} with $${randomInt(10)} millions"
+                                    "${names.sample()} with ${randomInt(10)} millions " +
+                                    "and ${names.sample()} with ${randomInt(10)} millions"
                             else -> "Your top revenue producers year to date are " +
-                                    "${names.sample()} with $${randomInt(10)} millions " +
-                                    "and ${names.sample()} with $${randomInt(10)} millions"
+                                    "${names.sample()} with ${randomInt(10)} millions " +
+                                    "and ${names.sample()} with ${randomInt(10)} millions"
                         }
                     }
                     else -> "I don't know about $role yet"
