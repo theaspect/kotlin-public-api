@@ -39,7 +39,7 @@ dependencies {
     compile 'org.postgresql:postgresql:42.3.3'
     compile 'com.zaxxer:HikariCP:5.0.1'
     compile 'org.webjars:webjars-locator'
-    compile 'org.webjars:jquery:2.2.4'
+    compile 'org.webjars:jquery:3.6.0'
     compile 'org.webjars:jquery-ui:1.12.1'
     compile 'org.webjars:bootstrap:5.1.3'
 
